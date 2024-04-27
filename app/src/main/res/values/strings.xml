@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SunflowerApp</string>
+    <string name="title_activity_plant_detail">PlantDetailActivity</string>
+    <string name="title_activity_dashboard">DashboardActivity</string>
+</resources>
