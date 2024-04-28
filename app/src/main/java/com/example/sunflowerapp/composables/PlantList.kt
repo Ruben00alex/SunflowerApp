@@ -12,13 +12,13 @@ import com.example.sunflowerapp.models.Plant
 
 @Composable
 
-fun PlantList(ListOfPlants: List<Plant>, onClick: (Plant) -> Unit){
+fun PlantList(listOfPlants: List<Plant>, onClick: (Plant) -> Unit){
     //display the list of plants
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier.padding(16.dp)
     ) {
-        items(ListOfPlants) { plant ->
+        items(listOfPlants) { plant ->
             PlantCard(
                 plant = plant,
                 modifier = Modifier.padding(8.dp),
