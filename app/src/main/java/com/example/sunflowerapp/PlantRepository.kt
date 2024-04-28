@@ -13,12 +13,7 @@ import java.util.Locale
 class PlantRepository(private val context: Context) { // Store context in a property
     private val plants: List<Plant>
     private var gardenPlants: MutableList<Plant>
-    // filesDir:
-    val filesDir = context.filesDir
-
     init {
-        println("filesDir: $filesDir")
-        println("PlantRepository init")
         plants = readPlantsJson(context)
         gardenPlants = readGardenJson(context).toMutableList()
     }
@@ -27,17 +22,33 @@ class PlantRepository(private val context: Context) { // Store context in a prop
 
     fun getGardenPlants(): List<Plant> = gardenPlants
 
-    fun addPlantToGarden(plant: Plant) {
+    fun addPlantToGarden(plant: Plant) : List<Plant> {
+
+        //we have to change the conditional, because we are now comparing the whole plant object
+        //so we check the id of the plant object
+        if(gardenPlants.any { it.id == plant.id }){
+            Log.println(Log.INFO, "PlantRepository", "Plant already in garden")
+            return gardenPlants
+        }
         val plantWithDate = plant.copy(plantedDate = getCurrentDate())
         gardenPlants.add(plantWithDate)
         writeGardenJson(context, gardenPlants) // context is now accessible
+        return gardenPlants
     }
 
-    fun removePlantFromGarden(plant: Plant) {
+    fun removePlantFromGarden(plant: Plant) : List<Plant> {
         gardenPlants.remove(plant)
+        Log.println(Log.INFO, "PlantRepository", "Plant removed from garden")
+        //log the whole garden list , only the name of the plant will be printed
+        Log.println(Log.INFO, "PlantRepository", gardenPlants.toString())
+
         writeGardenJson(context, gardenPlants) // context is now accessible
+        return gardenPlants
     }
 
+    fun checkIfPlantInGarden(plant: Plant): Boolean {
+        return gardenPlants.any { it.id == plant.id }
+    }
     private fun getCurrentDate(): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return dateFormat.format(Date())
@@ -78,9 +89,10 @@ class PlantRepository(private val context: Context) { // Store context in a prop
 
 
     // reset the garden and write the empty list to the file
-    fun resetGarden() {
+    fun resetGarden() : List<Plant>{
         gardenPlants = mutableListOf()
         writeGardenJson(context, gardenPlants)
+        return gardenPlants
     }
     private fun writeGardenJson(context: Context, gardenPlants: List<Plant>) {
         println("writeGardenJson")
