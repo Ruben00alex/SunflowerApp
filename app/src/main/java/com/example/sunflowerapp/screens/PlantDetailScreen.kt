@@ -1,5 +1,6 @@
 package com.example.sunflowerapp.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -22,82 +27,53 @@ import androidx.compose.ui.unit.dp
 import com.example.sunflowerapp.PlantRepository
 import com.example.sunflowerapp.composables.PlantImage
 import com.example.sunflowerapp.models.Plant
+import com.example.sunflowerapp.viewmodels.GardenViewModel
 
 @Composable
-fun PlantDetailScreen(plant: Plant,onShareClick: (Plant) -> Unit, closeScreen: () -> Unit , plantRepository: PlantRepository?) {
-    Column(modifier =Modifier.fillMaxHeight()) {
-        //Box, which will contain the image and two buttons, one to go back on the top left corner,
-        // one to share the plant using an intent on the top right corner.
-        // and on the bottom right , if the plant is not in the garden, a button to add it to the garden,
-        // if it is in the garden, a button to remove it from the garden.
-        Box(
-            modifier = Modifier
-        ) {
+fun PlantDetailScreen(
+    plant: Plant,
+    onShareClick: (Plant) -> Unit,
+    closeScreen: () -> Unit,
+    viewModel: GardenViewModel, // Use ViewModel instead of Repository
+    plantRepository: PlantRepository
+) {
+    val isPlantInGarden = remember { mutableStateOf(plantRepository.checkIfPlantInGarden(plant)) }
+    Log.d("PlantDetailScreen", "isPlantInGarden: ${isPlantInGarden.value}")
+
+    Column(modifier = Modifier.fillMaxHeight()) {
+        Box(modifier = Modifier) {
             PlantImage(
                 imageUrl = plant.imageUrl,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(16f / 12f),
                 contentScale = ContentScale.Crop
-
             )
-            //back button (closeScrreen function will be passed.
-            Button(
-                onClick = {
-                    // Close the screen
-                    closeScreen()
-                },
-                modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.TopStart)
-            ) {
 
-                Spacer(modifier = Modifier.width(8.dp))
+            Button(onClick = closeScreen, modifier = Modifier.align(Alignment.TopStart)) {
                 Text(text = "Back")
             }
-            Button(
-                onClick = {
-                    // Share Details of the Plant
-                    onShareClick(plant)
-                },
-                modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.TopEnd)
-            ) {
 
-                Spacer(modifier = Modifier.width(8.dp))
+            Button(onClick = { onShareClick(plant) }, modifier = Modifier.align(Alignment.TopEnd)) {
                 Text(text = "Share")
             }
 
-            //Button with a conditional, if plant is in the garden, show the remove button, else show the add button.
-            if (plantRepository != null) {
-                if (plantRepository.checkIfPlantInGarden(plant)) {
-                    Button(
-                        onClick = {
-                            // Remove the plant from the garden
-                            plantRepository.resetGarden()
-                        },
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .align(Alignment.BottomEnd)
-                    ) {
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = "Remove from Garden")
+            Button(
+                onClick = {
+                    if (isPlantInGarden.value) {
+                        viewModel.removePlantFromGarden(plant)
+                        isPlantInGarden.value = false
+
+                    } else {
+                        viewModel.addPlantToGarden(plant)
+                        isPlantInGarden.value = true
                     }
-                } else {
-                    Button(
-                        onClick = {
-                            // Add the plant to the garden
-                            plantRepository.addPlantToGarden(plant)
-                        },
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .align(Alignment.BottomEnd)
-                    ) {
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = "Add to Garden")
-                    }
-                }
+                },
+                modifier = Modifier
+                    .padding(8.dp)
+                    .align(Alignment.BottomEnd)
+            ) {
+                Text(if (isPlantInGarden.value) "Remove from Garden" else "Add to Garden")
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -110,7 +86,6 @@ fun PlantDetailScreen(plant: Plant,onShareClick: (Plant) -> Unit, closeScreen: (
                 text = plant.name,
                 style = MaterialTheme.typography.displayLarge,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
-
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -134,7 +109,9 @@ fun PreviewPlantDetailScreen() {
             imageUrl = "Apple_orchard_in_Tasmania.jpg"),
         onShareClick = {},
         closeScreen = {},
-        plantRepository = null
+        viewModel = {} as GardenViewModel,
+        plantRepository = {} as PlantRepository
+
     )
 }
 

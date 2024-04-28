@@ -15,6 +15,7 @@ import com.example.sunflowerapp.models.Plant
 import com.example.sunflowerapp.screens.PlantDetailScreen
 import com.example.sunflowerapp.ui.theme.SunflowerAppTheme
 import com.example.sunflowerapp.utils.RepositoryProvider
+import com.example.sunflowerapp.viewmodels.GardenViewModel
 
 class PlantDetailActivity : ComponentActivity() {
     private val plantRepository: PlantRepository by lazy {
@@ -32,16 +33,13 @@ class PlantDetailActivity : ComponentActivity() {
                 ) {
                     //get the plant from the intent
                     val plant = intent.getParcelableExtra("plant", Plant::class.java)
-                    //make plant a remember so it can be used in the composable and update the UI
-
-
-
                     if (plant != null) {
                         PlantDetailScreen(plant = plant , onShareClick = { plant1 ->
                             sharePlantDetails(plant1)
                         }, closeScreen = {
                             finish()
-                        }, plantRepository = plantRepository
+                        }, viewModel = GardenViewModel(plantRepository),
+                        plantRepository = plantRepository
                         )
                     } else {
                         // Handle the case where the Plant object is null
