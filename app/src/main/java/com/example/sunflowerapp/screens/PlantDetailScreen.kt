@@ -34,7 +34,7 @@ fun PlantDetailScreen(
     plant: Plant,
     onShareClick: (Plant) -> Unit,
     closeScreen: () -> Unit,
-    viewModel: GardenViewModel, // Use ViewModel instead of Repository
+    viewModel: GardenViewModel,
     plantRepository: PlantRepository
 ) {
     val isPlantInGarden = remember { mutableStateOf(plantRepository.checkIfPlantInGarden(plant)) }
@@ -50,30 +50,37 @@ fun PlantDetailScreen(
                 contentScale = ContentScale.Crop
             )
 
-            Button(onClick = closeScreen, modifier = Modifier.align(Alignment.TopStart)) {
-                Text(text = "Back")
-            }
-
-            Button(onClick = { onShareClick(plant) }, modifier = Modifier.align(Alignment.TopEnd)) {
-                Text(text = "Share")
-            }
-
-            Button(
-                onClick = {
-                    if (isPlantInGarden.value) {
-                        viewModel.removePlantFromGarden(plant)
-                        isPlantInGarden.value = false
-
-                    } else {
-                        viewModel.addPlantToGarden(plant)
-                        isPlantInGarden.value = true
-                    }
-                },
+            Box(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.BottomEnd)
-            ) {
-                Text(if (isPlantInGarden.value) "Remove from Garden" else "Add to Garden")
+                    .fillMaxWidth().aspectRatio(16f / 12f).padding(8.dp))
+            {
+                Button(onClick = closeScreen, modifier = Modifier.align(Alignment.TopStart)) {
+                    Text(text = "Back")
+                }
+
+                Button(
+                    onClick = { onShareClick(plant) },
+                    modifier = Modifier.align(Alignment.TopEnd)
+                ) {
+                    Text(text = "Share")
+                }
+
+                Button(
+                    onClick = {
+                        if (isPlantInGarden.value) {
+                            viewModel.removePlantFromGarden(plant)
+                            isPlantInGarden.value = false
+
+                        } else {
+                            viewModel.addPlantToGarden(plant)
+                            isPlantInGarden.value = true
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                ) {
+                    Text(if (isPlantInGarden.value) "Remove from Garden" else "Add to Garden")
+                }
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -84,7 +91,7 @@ fun PlantDetailScreen(
         ) {
             Text(
                 text = plant.name,
-                style = MaterialTheme.typography.displayLarge,
+                style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.height(8.dp))
