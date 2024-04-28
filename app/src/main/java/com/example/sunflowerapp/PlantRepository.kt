@@ -30,14 +30,25 @@ class PlantRepository(private val context: Context) { // Store context in a prop
             Log.println(Log.INFO, "PlantRepository", "Plant already in garden")
             return gardenPlants
         }
+
+        //Print number of plants in the garden before adding
+        Log.println(Log.INFO, "PlantRepository", gardenPlants.size.toString())
+
+
         val plantWithDate = plant.copy(plantedDate = getCurrentDate())
         gardenPlants.add(plantWithDate)
         writeGardenJson(context, gardenPlants) // context is now accessible
+        //Print number of plants in the garden after adding
+        Log.println(Log.INFO, "PlantRepository", gardenPlants.size.toString())
+        Log.println(Log.INFO, "PlantRepository", "Plant added to garden")
+        //Print name of the plant
+        Log.println(Log.INFO, "PlantRepository", plant.name)
         return gardenPlants
     }
 
     fun removePlantFromGarden(plant: Plant) : List<Plant> {
-        gardenPlants.remove(plant)
+        //we will remove by id:
+        gardenPlants = gardenPlants.filter { it.id != plant.id }.toMutableList()
         Log.println(Log.INFO, "PlantRepository", "Plant removed from garden")
         //log the whole garden list , only the name of the plant will be printed
         Log.println(Log.INFO, "PlantRepository", gardenPlants.toString())
@@ -64,9 +75,6 @@ class PlantRepository(private val context: Context) { // Store context in a prop
     }
 
     private fun readGardenJson(context: Context): List<Plant> {
-        println("readGardenJson")
-
-
         //val gardenJson = context.assets.open("myGarden.json").bufferedReader().use { it.readText() }
 
         //gardenJSON will be a persistent file in the app's internal storage, so we have to first check if the file exists
@@ -99,8 +107,5 @@ class PlantRepository(private val context: Context) { // Store context in a prop
         val jsonString = Json.encodeToString(gardenPlants)
         //write the json string to the file in the internal storage:
         context.openFileOutput("myGarden.json", Context.MODE_PRIVATE).use { it.write(jsonString.toByteArray()) }
-
-
-
     }
 }
