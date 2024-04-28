@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,14 +33,17 @@ import com.example.sunflowerapp.models.Plant
 @Composable
 fun PlantCard(
     plant: Plant,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (Plant) -> Unit
 ) {
     OutlinedCard(
-        modifier = modifier,
+        modifier = modifier.clickable { onClick(plant) },
         colors = CardDefaults.outlinedCardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        border = BorderStroke(0.dp, MaterialTheme.colorScheme.outline)
+        border = BorderStroke(0.dp, MaterialTheme.colorScheme.outline),
+
+
     ) {
         Box(
             modifier = Modifier.padding(0.dp )
@@ -47,15 +51,17 @@ fun PlantCard(
             PlantImage(
                 imageUrl = plant.imageUrl,
                 modifier = Modifier
-
                     .fillMaxWidth()
-                    .aspectRatio(16f/9f)
+                    .aspectRatio(16f / 9f)
             )
             //text will be one line and ellipsized, also centered, have opaque background since the text is white and it will be on top of the image.
             Text(
                 text = plant.name,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(6.dp).clip(MaterialTheme.shapes.large).background(MaterialTheme.colorScheme.surfaceVariant)
+                modifier = Modifier
+                    .padding(6.dp)
+                    .clip(MaterialTheme.shapes.large)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
                     .padding(6.dp),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -70,7 +76,8 @@ fun PlantCard(
 @Composable
 fun PlantImage(
     imageUrl: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Crop
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -106,6 +113,8 @@ fun PreviewPlantCard() {
             growZoneNumber = 3,
             wateringInterval = 30,
             imageUrl = "Apple_orchard_in_Tasmania.jpg"),
-         modifier = Modifier.padding(8.dp)
+         modifier = Modifier.padding(8.dp),
+            onClick = {}
+
     )
 }
