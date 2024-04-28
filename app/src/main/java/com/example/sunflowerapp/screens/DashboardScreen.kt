@@ -15,10 +15,12 @@ import com.example.sunflowerapp.models.Plant
 @Composable
 //TabRow element with the tabs for the dashboard screen, a tab for Plant list and one for garden.
 
-fun DashboardScreen(listOfPlants : List<Plant>, listOfGardenPlants : List<Plant>){
+fun DashboardScreen(listOfPlants : List<Plant>, listOfGardenPlants : List<Plant>,onClick : (Plant) -> Unit){
     val tabs = listOf("Plants", "Garden","Home")
     val (selectedTabIndex, setSelectedTabIndex) = remember { mutableStateOf(0) }
 
+    val (plantList, setPlantList) = remember { mutableStateOf(listOfPlants) }
+    val (gardenList, setGardenList) = remember { mutableStateOf(listOfGardenPlants) }
     Column {
         TabRow(
             selectedTabIndex = selectedTabIndex,
@@ -34,8 +36,8 @@ fun DashboardScreen(listOfPlants : List<Plant>, listOfGardenPlants : List<Plant>
         }
         //display the PlantList or GardenScreen composable based on the selected tab
         when (selectedTabIndex) {
-            0 -> PlantList(listOfPlants)
-            1 -> GardenGrid(listOfGardenPlants)
+            0 -> PlantList(plantList, onClick = onClick)
+            1 -> GardenGrid(gardenList )
         }
     }
 }
