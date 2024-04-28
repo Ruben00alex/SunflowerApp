@@ -16,9 +16,7 @@ import com.example.sunflowerapp.viewmodels.GardenViewModel
 import com.example.sunflowerapp.viewmodels.GardenViewModelFactory
 
 class DashboardActivity : ComponentActivity() {
-    private val plantRepository: PlantRepository by lazy {
-        RepositoryProvider.providePlantRepository(applicationContext)
-    }
+
 
     private val viewModel: GardenViewModel by viewModels {
         GardenViewModelFactory(RepositoryProvider.providePlantRepository(applicationContext))
@@ -37,7 +35,7 @@ class DashboardActivity : ComponentActivity() {
                     DashboardScreen(
                         onClick = { plant ->
                             val intent = Intent(this, PlantDetailActivity::class.java)
-                            intent.putExtra("plant", plant) // Pass the plant object as an extra
+                            intent.putExtra("plant", plant)
                             startActivity(intent)
                         },
                         viewModel= viewModel

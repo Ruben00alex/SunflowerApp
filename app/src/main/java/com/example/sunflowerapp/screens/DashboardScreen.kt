@@ -42,7 +42,7 @@ fun DashboardScreen(viewModel: GardenViewModel, onClick: (Plant) -> Unit) {
         // Display the PlantList or GardenScreen Composable based on the selected tab
         when (selectedTabIndex) {
             0 -> PlantList(plantList, onClick = onClick)
-            1 -> GardenGrid(gardenPlants)
+            1 -> GardenGrid(gardenPlants, onClick = {setSelectedTabIndex(0)})
         }
     }
 }
