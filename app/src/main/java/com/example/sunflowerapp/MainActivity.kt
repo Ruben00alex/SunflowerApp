@@ -21,7 +21,6 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
         //plant repository with context as parameter
-        val plantRepository = PlantRepository(this)
 
 //        println("MainActivity onCreate")
 //        //test of the repository methods:
@@ -56,7 +55,6 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     ////Button with implicit intent to open DashboardActivity
-
     fun GoToDashboardButton() {
         Button(onClick = {
             val intent = Intent(this, DashboardActivity::class.java)
@@ -65,20 +63,5 @@ class MainActivity : ComponentActivity() {
             Text("Go to Dashboard")
         }
     }
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SunflowerAppTheme {
-        Greeting("Android")
-    }
-}
 
 }
