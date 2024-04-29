@@ -1,10 +1,12 @@
 package com.example.sunflowerapp
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -21,6 +23,7 @@ class DashboardActivity : ComponentActivity() {
     private val viewModel: GardenViewModel by viewModels {
         GardenViewModelFactory(RepositoryProvider.providePlantRepository(applicationContext))
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -38,9 +41,9 @@ class DashboardActivity : ComponentActivity() {
                             intent.putExtra("plant", plant)
                             startActivity(intent)
                         },
-                        viewModel= viewModel
+                        viewModel = viewModel,
 
-                        )
+                    )
 
                 }
             }
