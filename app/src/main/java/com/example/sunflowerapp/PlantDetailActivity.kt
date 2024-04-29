@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -16,11 +17,13 @@ import com.example.sunflowerapp.screens.PlantDetailScreen
 import com.example.sunflowerapp.ui.theme.SunflowerAppTheme
 import com.example.sunflowerapp.utils.RepositoryProvider
 import com.example.sunflowerapp.viewmodels.GardenViewModel
+import com.example.sunflowerapp.viewmodels.GardenViewModelFactory
 
 class PlantDetailActivity : ComponentActivity() {
-    private val plantRepository: PlantRepository by lazy {
-        RepositoryProvider.providePlantRepository(applicationContext)
+    private val viewModel: GardenViewModel by viewModels {
+        GardenViewModelFactory(RepositoryProvider.providePlantRepository(applicationContext))
     }
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,12 +37,11 @@ class PlantDetailActivity : ComponentActivity() {
                     //get the plant from the intent
                     val plant = intent.getParcelableExtra("plant", Plant::class.java)
                     if (plant != null) {
-                        PlantDetailScreen(plant = plant , onShareClick = { plant1 ->
+                        PlantDetailScreen(plant = plant, onShareClick = { plant1 ->
                             sharePlantDetails(plant1)
                         }, closeScreen = {
                             finish()
-                        }, viewModel = GardenViewModel(plantRepository),
-                        plantRepository = plantRepository
+                        }, viewModel = viewModel,
                         )
                     } else {
                         // Handle the case where the Plant object is null
