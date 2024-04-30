@@ -19,7 +19,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import com.example.sunflowerapp.PlantRepository
+import com.example.sunflowerapp.R
 import com.example.sunflowerapp.composables.GardenGrid
 import com.example.sunflowerapp.composables.PlantList
 import com.example.sunflowerapp.models.Plant
@@ -76,7 +80,11 @@ fun DashboardScreen(viewModel: GardenViewModel, onClick: (Plant) -> Unit  ){
         }
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxHeight()
+            modifier = Modifier.fillMaxHeight().paint(
+                // Replace with your image id
+                painterResource(id = R.drawable.garden_2),
+                contentScale = ContentScale.FillBounds),
+
         ) { index ->
             when (index) {
                 0 -> PlantList(plantList, onClick = onClick)
