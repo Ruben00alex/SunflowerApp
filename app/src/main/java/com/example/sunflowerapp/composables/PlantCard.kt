@@ -77,7 +77,6 @@ fun PlantCard(
 fun PlantImage(
     imageUrl: String,
     modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.Crop
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)

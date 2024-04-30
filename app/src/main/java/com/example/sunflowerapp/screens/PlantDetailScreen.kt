@@ -6,9 +6,10 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -16,7 +17,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,8 +31,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -57,59 +65,88 @@ fun PlantDetailScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(16f / 12f),
-                contentScale = ContentScale.Crop
             )
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(16f / 12f)
                     .padding(8.dp)
             ) {
-                Button(onClick = closeScreen, modifier = Modifier.align(Alignment.TopStart)) {
-                    Text(text = "Back")
-                }
-
                 Button(
-                    onClick = { onShareClick(plant) }, modifier = Modifier.align(Alignment.TopEnd)
+                    onClick = closeScreen,
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .size(64.dp),
                 ) {
-                    Text(text = "Share")
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
                 }
-
                 Button(
-                    onClick = {
-                        if (isPlantInGarden.value) {
-                            viewModel.removePlantFromGarden(plant)
-                            isPlantInGarden.value = false
+                    onClick = { onShareClick(plant) },
+                    modifier = Modifier
+                        .clip(RectangleShape)
+                        .size(64.dp)
+                        .align(Alignment.BottomEnd),
 
-                        } else {
-                            viewModel.addPlantToGarden(plant)
-                            isPlantInGarden.value = true
-                        }
-                    }, modifier = Modifier.align(Alignment.BottomEnd)
+                    shape = RectangleShape,
                 ) {
-                    Text(if (isPlantInGarden.value) "Remove from Garden" else "Add to Garden")
+                    Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
+
                 }
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
+
         Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = plant.name,
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(16.dp)
+            )
+            Button(
+                onClick = {
+                    if (isPlantInGarden.value) {
+                        viewModel.removePlantFromGarden(plant)
+                        isPlantInGarden.value = false
+
+                    } else {
+                        viewModel.addPlantToGarden(plant)
+                        isPlantInGarden.value = true
+                    }
+                }
+            ) {
+                Text(if (isPlantInGarden.value) "Remove from Garden" else "Add to Garden")
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        LazyColumn(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
-            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            item {
                 Text(
-                    text = plant.name, style = MaterialTheme.typography.displayMedium
+                    text = "Watering needs: ${plant.wateringInterval} days",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.inverseOnSurface,
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.medium)
+                        .background(MaterialTheme.colorScheme.inverseSurface)
+                        .padding(6.dp)
 
                 )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            val spanned = HtmlCompat.fromHtml(plant.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
 
-            Text(
-                text = spanned.toAnnotatedString(), style = MaterialTheme.typography.bodyMedium
-            )
+                Spacer(modifier = Modifier.height(8.dp))
+                val spanned =
+                    HtmlCompat.fromHtml(plant.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                Text(
+                    text =
+                    spanned.toAnnotatedString(), style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
     }
 }

@@ -33,8 +33,8 @@ fun DashboardScreen(viewModel: GardenViewModel, onClick: (Plant) -> Unit  ){
     val tabs = listOf("Plants", "Garden")
     val (selectedTabIndex, setSelectedTabIndex) = remember { mutableStateOf(0) }
 
-    val gardenPlants =viewModel.gardenPlants.collectAsState()
-    val plantList = remember { viewModel.getPlants() }
+    val gardenPlants = viewModel.gardenPlants.collectAsState()
+    val plantList = viewModel.getPlants()
 
     val pagerState = rememberPagerState {
         tabs.size
@@ -42,11 +42,14 @@ fun DashboardScreen(viewModel: GardenViewModel, onClick: (Plant) -> Unit  ){
     Column {
         TabRow(
             selectedTabIndex = selectedTabIndex,
-            contentColor = MaterialTheme.colorScheme.onPrimary
+            contentColor = MaterialTheme.colorScheme.primary
         ) {
             tabs.forEachIndexed { index, title ->
                 Tab(
-                    text = { Text(title) },
+                    text = { Text(
+                        text= title,
+
+                        ) },
                     selected = selectedTabIndex == index,
                     onClick = {
                         setSelectedTabIndex(index)
@@ -58,17 +61,18 @@ fun DashboardScreen(viewModel: GardenViewModel, onClick: (Plant) -> Unit  ){
             }
         }
 
-        LaunchedEffect(key1 = gardenPlants.value) {
-            // This block will execute every time gardenPlants.value changes,
-            // forcing recomposition of everything inside it.
-            Log.d("DashboardScreen", "Garden plants changed")
-        }
         LaunchedEffect(selectedTabIndex) {
             pagerState.animateScrollToPage(selectedTabIndex)
+            if (selectedTabIndex == 1) {
+                viewModel.loadGardenPlants()
+            }
         }
 
         LaunchedEffect(pagerState.currentPage) {
             setSelectedTabIndex(pagerState.currentPage)
+            if (pagerState.currentPage == 1) {
+                viewModel.loadGardenPlants()
+            }
         }
         HorizontalPager(
             state = pagerState,
@@ -76,7 +80,7 @@ fun DashboardScreen(viewModel: GardenViewModel, onClick: (Plant) -> Unit  ){
         ) { index ->
             when (index) {
                 0 -> PlantList(plantList, onClick = onClick)
-                1 -> GardenGrid(gardenPlants.value, onClick = { setSelectedTabIndex(0) }, viewModel = viewModel  )
+                1 -> GardenGrid(gardenPlants.value, onClick = { setSelectedTabIndex(0) }, viewModel = viewModel ,openDetailActivity = onClick)
                 else -> throw IllegalStateException("Unexpected index: $index")
             }
 

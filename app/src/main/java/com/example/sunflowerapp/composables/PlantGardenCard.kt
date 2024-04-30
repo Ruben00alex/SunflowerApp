@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,7 +29,7 @@ import com.example.sunflowerapp.viewmodels.GardenViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-
+import   androidx.compose.material3.CardElevation
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -36,6 +37,7 @@ fun PlantCardGarden(
     plantID: String,
     modifier: Modifier = Modifier,
     viewModel: GardenViewModel,
+    onClick: (Plant) -> Unit
 ) {
     val plant = viewModel.getPlant(plantID)
     if (plant == null) {
@@ -44,29 +46,27 @@ fun PlantCardGarden(
     }
 
     OutlinedCard(
-        modifier = modifier,
+        modifier = modifier.clickable { onClick(plant) },
         colors = CardDefaults.outlinedCardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.background
         ),
-        border = BorderStroke(0.dp, MaterialTheme.colorScheme.outline)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(
-            modifier = Modifier.padding(0.dp)
         ) {
             PlantImage(
                 imageUrl = plant.imageUrl,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(16f / 9f)
-                    .blur(.5.dp)
             )
 
             Text(
                 text = plant.name,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(0.dp)
+                    .padding(6.dp)
                     .fillMaxWidth(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -88,15 +88,30 @@ fun PlantCardGarden(
             //Planted on:
 //            val wateredStatus = if (plant.lastWateredDate == null) "Not watered yet" else "Last watered: ${plant.lastWateredDate}"
             val wateredStatus = dateUntilWatering(plant)
-            Text(
-                text = wateredStatus,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
-                    .padding(4.dp)
-                    .fillMaxWidth(),
-                color = MaterialTheme.colorScheme.onSurface,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-            )
+            //Text with last watered date:
+                val wateredText = plant.lastWateredDate?.let { "Last watered: $it" } ?: "Not watered yet"
+                Text(
+                    text = wateredText,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+
+            if(wateredStatus != null.toString()) {
+                //Text with days until next watering:
+                Text(
+                    text = wateredStatus,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+            }
 
 
             //Row with two buttons: Water and Remove
@@ -108,6 +123,7 @@ fun PlantCardGarden(
                 TextButton(
                     onClick = {
                         viewModel.waterPlant(plant.id)
+
                     },
                     modifier = Modifier
                         .padding(0.dp)
@@ -152,7 +168,7 @@ fun dateUntilWatering(plant: Plant): String {
     }
 
     // If the plant hasn't been watered yet
-    return "Not watered yet"
+    return null.toString()
 }
 
 
@@ -164,6 +180,7 @@ fun PreviewPlantCardGarden() {
         plantID = "malus-pumila",
         modifier = Modifier.padding(8.dp),
         viewModel = {} as GardenViewModel,
+        onClick = {}
     )
 }
 

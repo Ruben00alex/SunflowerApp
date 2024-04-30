@@ -18,6 +18,4 @@ data class Plant(
     @SerialName("imageUrl") val imageUrl: String,
     @SerialName("plantedDate") val plantedDate: String? = null,
     val lastWateredDate: String? = null,
-    val inGarden: Boolean = false
-
 ) : Parcelable

@@ -15,7 +15,7 @@ import com.example.sunflowerapp.models.Plant
 fun PlantList(listOfPlants: List<Plant>, onClick: (Plant) -> Unit) {
     Box(modifier = Modifier.padding(0.dp)) {
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+            columns = GridCells.Fixed(1),
             modifier = Modifier.padding(16.dp)
         ) {
             items(listOfPlants) { plant ->

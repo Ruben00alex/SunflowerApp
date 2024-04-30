@@ -49,4 +49,9 @@ class DashboardActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+         viewModel.loadGardenPlants()
+    }
 }

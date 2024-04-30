@@ -24,24 +24,28 @@ class GardenViewModel(private val plantRepository: PlantRepository) : ViewModel(
     fun loadGardenPlants() {
         viewModelScope.launch {
             _gardenPlants.value = plantRepository.getGardenPlants()
+
         }
     }
     fun waterPlant(plantId: String) {
         viewModelScope.launch {
 
             _gardenPlants.value =plantRepository.waterPlantById(plantId)
+            loadGardenPlants()
         }
     }
     fun getPlants() = plantRepository.getPlants()
     fun addPlantToGarden(plant: Plant) {
         viewModelScope.launch {
             _gardenPlants.value = plantRepository.addPlantToGarden(plant)
+            loadGardenPlants()
         }
     }
 
     fun removePlantFromGarden(plant: Plant) {
         viewModelScope.launch {
             _gardenPlants.value = plantRepository.removePlantFromGarden(plant)
+            loadGardenPlants()
         }
     }
 }
