@@ -19,7 +19,8 @@ import com.example.sunflowerapp.viewmodels.GardenViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun GardenGrid(listOfGardenPlants: List<Plant>, onClick: () -> Unit, viewModel: GardenViewModel) {
+fun GardenGrid(listOfGardenPlants: List<Plant>, onClick: () -> Unit, viewModel: GardenViewModel ,openDetailActivity : (Plant) -> Unit){
+
     if (listOfGardenPlants.isEmpty()) {
         Box() {
             Column(
@@ -50,6 +51,7 @@ fun GardenGrid(listOfGardenPlants: List<Plant>, onClick: () -> Unit, viewModel: 
                 plantID = plant.id,
                 modifier = Modifier.padding(16.dp),
                 viewModel = viewModel,
+                onClick = {openDetailActivity(plant) }
             )
         }
     }
