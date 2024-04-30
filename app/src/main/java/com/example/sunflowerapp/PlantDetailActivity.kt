@@ -35,7 +35,7 @@ class PlantDetailActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     //get the plant from the intent
-                    val plant = intent.getParcelableExtra("plant", Plant::class.java)
+                    val plant = intent.getParcelableExtra<Plant>("plant" )
                     if (plant != null) {
                         PlantDetailScreen(plant = plant, onShareClick = { plant1 ->
                             sharePlantDetails(plant1)
